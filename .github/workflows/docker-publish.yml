@@ -23,16 +23,16 @@ jobs:
         major_regexp_flags: "i"  # 'i' flag for case-insensitive matching, remove if case sensitivity is needed
         minor_pattern: "(MINOR)"
         minor_regexp_flags: ""
-        version_format: "${major}.${minor}.${patch}-prerelease${increment}"
+        version_format: "${major}.${minor}.${patch}"
 
-    - name: Create GitHub Release
+    - name: Create tag
       if: steps.semver.outputs.new_version != ''
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
+      uses: actions/github-script@v5
       with:
-        tag_name: ${{ steps.semver.outputs.version }}
-        release_name: Release ${{ steps.semver.outputs.version }}
-        body: |
-          Changes in this Release
-          ${{ steps.semver.outputs.changelog }}
+        script: |
+          github.rest.git.createRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: 'refs/tags/${steps.semver.outputs.new_version}',
+            sha: context.sha
+          })
