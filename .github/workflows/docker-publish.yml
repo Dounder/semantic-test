@@ -16,15 +16,14 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Generate Semantic Version
-      id: semver
-      uses: paulhatch/semantic-version@v5.3.0
+    - uses: paulhatch/semantic-version@v5.3.0
       with:
-        branch: main  # Or your default branch
         tag_prefix: "v"
-        major_pattern: "^update:"  # Custom pattern for major updates
-        minor_pattern: "^feat:"  # Default pattern for minor updates
-        format: "${major}.${minor}.${patch}"
+        major_pattern: "^update:"
+        major_regexp_flags: "i"  # 'i' flag for case-insensitive matching, remove if case sensitivity is needed
+        minor_pattern: "(MINOR)"
+        minor_regexp_flags: ""
+        version_format: "${major}.${minor}.${patch}-prerelease${increment}"
 
     - name: Create GitHub Release
       if: steps.semver.outputs.new_version != ''
