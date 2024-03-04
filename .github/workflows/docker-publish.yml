@@ -18,6 +18,7 @@ jobs:
         fetch-depth: 0
 
     - uses: paulhatch/semantic-version@v5.3.0
+      id: semantic_version
       with:
         tag_prefix: "v"
         major_pattern: "^update:"
@@ -26,4 +27,4 @@ jobs:
         minor_regexp_flags: ""
         version_format: "${major}.${minor}.${patch}"
         
-    - run: echo "New version is ${{ steps.semantic_version.outputs.version }}"
+    - run: echo "New version is ${{ steps.semantic_version.outputs.version_tag }}"
